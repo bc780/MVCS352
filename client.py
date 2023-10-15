@@ -40,6 +40,18 @@ if msg.decode("ascii") != "260 OK":
 
 # escape the message here
 escapedMsg = msgBytes
+for char in temp:
+    if char == 34:
+        escapedMsg[i] = 92
+        i += 1
+        escapedMsg[i] = 34
+        i += 1
+        j += 1
+    else:
+        escapedMsg[i] = msgBytes[j]
+        i += 1
+        j += 1
+        
 s.send(escapedMsg.encode("ascii"))
 
 msg = s.recv(128)
