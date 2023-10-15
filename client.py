@@ -21,8 +21,8 @@ with open(msgName, 'r', encoding='ascii') as file:
         if i%2==0:
             msgSizes.append(int(line.strip()))
         else:
-            bytes = bytes(line.strip(),'ascii')
-            msgBytes.append(bytes) 
+            tempBytes = bytes(line.strip(),'ascii')
+            msgBytes.append(tempBytes) 
           
 with open(sigName, 'r', encoding='ascii') as file:
     for i, line in enumerate(file):
