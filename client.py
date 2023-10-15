@@ -7,10 +7,10 @@ msgName = sys.argv[3]
 sigName = sys.argv[4]
 
 #temp debug to check args
-print(serverName)
-print(serverPort)
-print(msgName)
-print(sigName)
+# print(serverName)
+# print(serverPort)
+# print(msgName)
+# print(sigName)
 
 msgSizes = []
 msgBytes = []
@@ -31,7 +31,33 @@ with open(sigName, 'r', encoding='ascii') as file:
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((serverName, serverPort))
 
-s.send("HELLO")
+s.send("HELLO".encode("ascii"))
 
 msg = s.recv(128)
-print(msg.decode("utf-8"))
+if msg.decode("ascii") != "260 OK":
+    print("error: expected 260 OK")
+    exit()
+
+# escape the message here
+escapedMsg = msgBytes
+s.send(escapedMsg.encode("ascii"))
+
+msg = s.recv(128)
+if msg.decode("ascii") != "270 SIG":
+    print("error: expected 270 SIG")
+    exit()
+
+msg = s.recv(10000)
+
+#compare signature strings here
+
+if signatures == msg:
+    s.send("PASS".encode("ascii"))
+else:
+    s.send("FAIL".encode("ascii"))
+msg = s.recv(128)
+if msg.decode("ascii") != "260 OK":
+    print("error: expected 260 OK")
+    exit()
+s.send("QUIT").encode("ascii")
+s.close()
