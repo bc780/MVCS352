@@ -17,7 +17,7 @@ msgBytes = []
 signatures = []
 
 with open(msgName, 'r', encoding='ascii') as file:
-    for i, line in enumerate(fp):
+    for i, line in enumerate(file):
         if i%2==0:
             msgSizes.append(int(line.strip()))
         else:
@@ -25,7 +25,7 @@ with open(msgName, 'r', encoding='ascii') as file:
             msgBytes.append(bytes) 
           
 with open(sigName, 'r', encoding='ascii') as file:
-    for i, line in enumerate(fp):
+    for i, line in enumerate(file):
         signatures.append(line.strip())
           
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
