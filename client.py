@@ -7,10 +7,10 @@ msgName = sys.argv[3]
 sigName = sys.argv[4]
 
 #temp debug to check args
-# print(serverName)
-# print(serverPort)
-# print(msgName)
-# print(sigName)
+print(serverName)
+print(serverPort)
+print(msgName)
+print(sigName)
 
 msgSizes = []
 msgBytes = []
@@ -41,21 +41,9 @@ if msg.decode("ascii") != "260 OK":
 
 for i in msgSizes:
 
-    # escape the message here
-    escapedMsg = msgBytes[i]
-    for char in temp:
-        if char == 46:
-            escapedMsg[i] = 92
-            i += 1
-            escapedMsg[i] = 46
-            i += 1
-            j += 1
-        else:
-            escapedMsg[i] = msgBytes[j]
-            i += 1
-            j += 1
+    msgSizes[i] = msgSizes[i].replace(".","\\.")
     s.send("DATA".encode("ascii"))        
-    s.send(escapedMsg.encode("ascii"))
+    s.send(msgSizes[i].encode("ascii"))
 
     msg = s.recv(128)
     print(msg.decode("ascii")+ "\n")
