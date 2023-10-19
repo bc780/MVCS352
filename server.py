@@ -32,8 +32,10 @@ if msg.decode("ascii") == "HELLO":
         msg = c.recv(1028)
         if msg.decode("ascii") == "DATA":
             msg.recv(10000)
+            
             #unescape the line here
-
+            msg = msg.replace("\.",".")
+            
             #use sha256 hash here
             c.send("270 SIG".encode("ascii"))
             #send back sig
