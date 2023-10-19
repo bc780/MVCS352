@@ -14,30 +14,39 @@ keys = []
 with open(keyName, 'r', encoding='ascii') as file:
     for i, line in enumerate(file):
         keys.append(line.strip())
-
+#tracker for what key its on        
+i = 0
 #establish socket
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind((socket.gethostname(), listenPort))
-#temp print to get host name
-print(socket.gethostname())
+s.bind(('localhost', listenPort))
 s.listen(5)
 
 #listen for connection
 c, address = s.accept()
 msg = c.recv(1028)
+print(msg.decode("ascii")+ "\n")
 print(msg.decode("ascii"))
 if msg.decode("ascii") == "HELLO":
     c.send("260 OK".encode("ascii"))
     while True:
         msg = c.recv(1028)
+        print(msg.decode("ascii")+ "\n")
         if msg.decode("ascii") == "DATA":
             msg.recv(10000)
+            print(msg.decode("ascii")+ "\n")
             #unescape the line here
-
+            unescapedMsg = msg
             #use sha256 hash here
+            hash = hashlib.sha256()
+            hash.update(unescapedMsg.encode("ascii"))
+            hash.update(keys[i].encode("ascii"))
+            i += 1
+
             c.send("270 SIG".encode("ascii"))
+            c.send(hash.hexdigest())
             #send back sig
             msg.recv(1028)
+            print(msg.decode("ascii")+ "\n")
             if msg.decode("ascii") == "PASS":
                 c.send("260 OK".encode("ascii"))
             elif msg.decode("ascii") == "FAIL":

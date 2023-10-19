@@ -34,6 +34,7 @@ s.connect((serverName, serverPort))
 s.send("HELLO".encode("ascii"))
 
 msg = s.recv(128)
+print(msg.decode("ascii")+ "\n")
 if msg.decode("ascii") != "260 OK":
     print("error: expected 260 OK")
     exit()
@@ -57,11 +58,13 @@ for i in msgSizes:
     s.send(escapedMsg.encode("ascii"))
 
     msg = s.recv(128)
+    print(msg.decode("ascii")+ "\n")
     if msg.decode("ascii") != "270 SIG":
         print("error: expected 270 SIG")
         exit()
 
     msg = s.recv(10000)
+    print(msg.decode("ascii")+ "\n")
 
     #compare signature strings here
 
@@ -70,6 +73,7 @@ for i in msgSizes:
     else:
         s.send("FAIL".encode("ascii"))
     msg = s.recv(128)
+    print(msg.decode("ascii")+ "\n")
     if msg.decode("ascii") != "260 OK":
         print("error: expected 260 OK")
         exit()
