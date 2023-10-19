@@ -34,11 +34,13 @@ if msg.decode("ascii") == "HELLO":
         if msg.decode("ascii") == "DATA":
             msg.recv(10000)
             print(msg.decode("ascii")+ "\n")
+            
             #unescape the line here
-            unescapedMsg = msg
+            msg = msg.replace("\.",".")
+            
             #use sha256 hash here
             hash = hashlib.sha256()
-            hash.update(unescapedMsg.encode("ascii"))
+            hash.update(msg.encode("ascii"))
             hash.update(keys[i].encode("ascii"))
             i += 1
 
