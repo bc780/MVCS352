@@ -43,10 +43,10 @@ for i in msgSizes:
     # escape the message here
     escapedMsg = msgBytes[i]
     for char in temp:
-        if char == 34:
+        if char == 46:
             escapedMsg[i] = 92
             i += 1
-            escapedMsg[i] = 34
+            escapedMsg[i] = 46
             i += 1
             j += 1
         else:
