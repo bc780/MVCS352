@@ -38,38 +38,40 @@ if msg.decode("ascii") != "260 OK":
     print("error: expected 260 OK")
     exit()
 
-# escape the message here
-escapedMsg = msgBytes
-for char in temp:
-    if char == 34:
-        escapedMsg[i] = 92
-        i += 1
-        escapedMsg[i] = 34
-        i += 1
-        j += 1
+for i in msgSizes:
+
+    # escape the message here
+    escapedMsg = msgBytes[i]
+    for char in temp:
+        if char == 34:
+            escapedMsg[i] = 92
+            i += 1
+            escapedMsg[i] = 34
+            i += 1
+            j += 1
+        else:
+            escapedMsg[i] = msgBytes[j]
+            i += 1
+            j += 1
+    s.send("DATA".encode("ascii"))        
+    s.send(escapedMsg.encode("ascii"))
+
+    msg = s.recv(128)
+    if msg.decode("ascii") != "270 SIG":
+        print("error: expected 270 SIG")
+        exit()
+
+    msg = s.recv(10000)
+
+    #compare signature strings here
+
+    if signatures[i] == msg:
+        s.send("PASS".encode("ascii"))
     else:
-        escapedMsg[i] = msgBytes[j]
-        i += 1
-        j += 1
-        
-s.send(escapedMsg.encode("ascii"))
-
-msg = s.recv(128)
-if msg.decode("ascii") != "270 SIG":
-    print("error: expected 270 SIG")
-    exit()
-
-msg = s.recv(10000)
-
-#compare signature strings here
-
-if signatures == msg:
-    s.send("PASS".encode("ascii"))
-else:
-    s.send("FAIL".encode("ascii"))
-msg = s.recv(128)
-if msg.decode("ascii") != "260 OK":
-    print("error: expected 260 OK")
-    exit()
+        s.send("FAIL".encode("ascii"))
+    msg = s.recv(128)
+    if msg.decode("ascii") != "260 OK":
+        print("error: expected 260 OK")
+        exit()
 s.send("QUIT").encode("ascii")
 s.close()

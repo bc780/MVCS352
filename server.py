@@ -1,5 +1,5 @@
 from fileinput import filename
-import socket, sys
+import socket, sys, hashlib
 
 # take in arguments
 listenPort = int(sys.argv[1])
