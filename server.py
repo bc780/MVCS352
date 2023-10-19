@@ -36,7 +36,7 @@ if msg.decode("ascii") == "HELLO":
             print(msg.decode("ascii")+ "\n")
             
             #unescape the line here
-            msg = msg.replace("\.",".")
+            msg = msg.replace("\\.",".")
             
             #use sha256 hash here
             hash = hashlib.sha256()
@@ -67,8 +67,3 @@ if msg.decode("ascii") == "HELLO":
 else:
     print("error: illegal command, expecting HELLO")
     c.close()
-
-
-
-
-
