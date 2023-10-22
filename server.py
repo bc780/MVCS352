@@ -14,6 +14,8 @@ keys = []
 with open(keyName, 'r', encoding='ascii') as file:
     for i, line in enumerate(file):
         keys.append(line.strip())
+print(keys)
+print(type(keys[0]))
 #tracker for what key its on        
 i = 0
 #establish socket
@@ -25,34 +27,40 @@ s.listen(5)
 c, address = s.accept()
 msg = c.recv(1028)
 print(msg.decode("ascii")+ "\n")
-print(msg.decode("ascii"))
 if msg.decode("ascii") == "HELLO":
     c.send("260 OK".encode("ascii"))
+    print("260 OK\n")
     while True:
         msg = c.recv(1028)
         print(msg.decode("ascii")+ "\n")
         if msg.decode("ascii") == "DATA":
-            msg.recv(10000)
-            print(msg.decode("ascii")+ "\n")
+            msg = c.recv(10000)
+            tempStr = msg.decode("ascii")
+            print(tempStr + "\n")
             
             #unescape the line here
-            msg = msg.replace("\\.",".")
+            tempStr = tempStr.replace("\.",".")
+            print(tempStr + "\n")
             
             #use sha256 hash here
             hash = hashlib.sha256()
-            hash.update(msg.encode("ascii"))
+            hash.update(tempStr.encode("ascii"))
             hash.update(keys[i].encode("ascii"))
             i += 1
 
             c.send("270 SIG".encode("ascii"))
-            c.send(hash.hexdigest())
+            print("270 SIG\n")
+            c.send(hash.hexdigest().encode("ascii"))
+            print(hash.hexdigest() + "\n")
             #send back sig
-            msg.recv(1028)
+            msg = c.recv(1028)
             print(msg.decode("ascii")+ "\n")
             if msg.decode("ascii") == "PASS":
                 c.send("260 OK".encode("ascii"))
+                print("260 OK\n")
             elif msg.decode("ascii") == "FAIL":
                 c.send("260 OK".encode("ascii"))
+                print("260 OK\n")
             else:
                 print("error: illegal command, expecting PASS or FAIL")
                 c.close()

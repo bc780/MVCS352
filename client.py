@@ -7,10 +7,10 @@ msgName = sys.argv[3]
 sigName = sys.argv[4]
 
 #temp debug to check args
-print(serverName)
-print(serverPort)
-print(msgName)
-print(sigName)
+# print(serverName)
+# print(serverPort)
+# print(msgName)
+# print(sigName)
 
 msgSizes = []
 msgBytes = []
@@ -23,6 +23,7 @@ with open(msgName, 'r', encoding='ascii') as file:
         else:
             tempBytes = bytes(line.strip(),'ascii')
             msgBytes.append(tempBytes) 
+           
           
 with open(sigName, 'r', encoding='ascii') as file:
     for i, line in enumerate(file):
@@ -32,6 +33,7 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((serverName, serverPort))
 
 s.send("HELLO".encode("ascii"))
+print("HELLO\n")
 
 msg = s.recv(128)
 print(msg.decode("ascii")+ "\n")
@@ -39,11 +41,15 @@ if msg.decode("ascii") != "260 OK":
     print("error: expected 260 OK")
     exit()
 
-for i in msgSizes:
+for i in range(len(msgBytes)):
 
-    msgSizes[i] = msgSizes[i].replace(".","\\.")
-    s.send("DATA".encode("ascii"))        
-    s.send(msgSizes[i].encode("ascii"))
+    tempStr = msgBytes[i].decode()
+    print(tempStr)
+    tempStr = tempStr.replace(".","\.")
+    s.send("DATA".encode("ascii"))
+    print("DATA\n")        
+    s.send(tempStr.encode("ascii"))
+    print(tempStr + "\n")
 
     msg = s.recv(128)
     print(msg.decode("ascii")+ "\n")
@@ -56,14 +62,17 @@ for i in msgSizes:
 
     #compare signature strings here
 
-    if signatures[i] == msg:
+    if signatures[i] == msg.decode("ascii"):
         s.send("PASS".encode("ascii"))
+        print("PASS\n")
     else:
         s.send("FAIL".encode("ascii"))
+        print("FAIL\n")
     msg = s.recv(128)
     print(msg.decode("ascii")+ "\n")
     if msg.decode("ascii") != "260 OK":
         print("error: expected 260 OK")
         exit()
-s.send("QUIT").encode("ascii")
+s.send("QUIT".encode("ascii"))
+print("QUIT\n")
 s.close()
