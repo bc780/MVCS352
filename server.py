@@ -29,20 +29,21 @@ s.listen(5)
 #listen for connection
 c, address = s.accept()
 msg = c.recv(1028)
-print(msg.decode("ascii")+ "\n")
-if msg.decode("ascii") == "HELLO":
-    c.send("260 OK".encode("ascii"))
+print(msg.decode("ascii"))
+if msg.decode("ascii") == "HELLO\n":
+    c.send("260 OK\n".encode("ascii"))
     print("260 OK\n")
     while True:
         msg = c.recv(1028)
-        print(msg.decode("ascii")+ "\n")
-        if msg.decode("ascii") == "DATA":
+        print(msg.decode("ascii"))
+        if msg.decode("ascii") == "DATA\n":
             msg = c.recv(10000)
             tempStr = msg.decode("ascii")
-            print(tempStr + "\n")
+            print(tempStr)
             
             #unescape the line here
             tempStr = tempStr.replace("\.",".")
+            tempStr = tempStr.strip("\n")
             #temp debug
             # print(tempStr + "\n")
             
@@ -52,30 +53,31 @@ if msg.decode("ascii") == "HELLO":
             hash.update(keys[i].encode("ascii"))
             i += 1
 
-            c.send("270 SIG".encode("ascii"))
+            c.send("270 SIG\n".encode("ascii"))
             print("270 SIG\n")
-            c.send(hash.hexdigest().encode("ascii"))
-            print(hash.hexdigest() + "\n")
+            temp = hash.hexdigest() + "\n"
+            c.send(temp.encode("ascii"))
+            print(temp)
             #send back sig
             msg = c.recv(1028)
-            print(msg.decode("ascii")+ "\n")
-            if msg.decode("ascii") == "PASS":
-                c.send("260 OK".encode("ascii"))
+            print(msg.decode("ascii"))
+            if msg.decode("ascii") == "PASS\n":
+                c.send("260 OK\n".encode("ascii"))
                 print("260 OK\n")
-            elif msg.decode("ascii") == "FAIL":
-                c.send("260 OK".encode("ascii"))
+            elif msg.decode("ascii") == "FAIL\n":
+                c.send("260 OK\n".encode("ascii"))
                 print("260 OK\n")
             else:
-                print("error: illegal command, expecting PASS or FAIL")
+                print("error: illegal command, expecting PASS or FAIL\n")
                 c.close()
                 break
-        elif msg.decode("ascii") == "QUIT":
+        elif msg.decode("ascii") == "QUIT\n":
             c.close()
             break
         else:
-            print("error: illegal command, expecting DATA or QUIT")
+            print("error: illegal command, expecting DATA or QUIT\n")
             c.close()
             break
 else:
-    print("error: illegal command, expecting HELLO")
+    print("error: illegal command, expecting HELLO\n")
     c.close()

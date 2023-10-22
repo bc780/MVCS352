@@ -32,13 +32,13 @@ with open(sigName, 'r', encoding='ascii') as file:
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((serverName, serverPort))
 
-s.send("HELLO".encode("ascii"))
+s.send("HELLO\n".encode("ascii"))
 print("HELLO\n")
 
 msg = s.recv(128)
-print(msg.decode("ascii")+ "\n")
-if msg.decode("ascii") != "260 OK":
-    print("error: expected 260 OK")
+print(msg.decode("ascii"))
+if msg.decode("ascii") != "260 OK\n":
+    print("error: expected 260 OK\n")
     exit()
 
 for i in range(len(msgBytes)):
@@ -47,33 +47,36 @@ for i in range(len(msgBytes)):
     #temp debug
     # print(tempStr)
     tempStr = tempStr.replace(".","\.")
-    s.send("DATA".encode("ascii"))
+    tempStr = tempStr + "\n"
+    s.send("DATA\n".encode("ascii"))
     print("DATA\n")        
     s.send(tempStr.encode("ascii"))
-    print(tempStr + "\n")
+    print(tempStr)
 
     msg = s.recv(128)
-    print(msg.decode("ascii")+ "\n")
-    if msg.decode("ascii") != "270 SIG":
-        print("error: expected 270 SIG")
+    print(msg.decode("ascii"))
+    if msg.decode("ascii") != "270 SIG\n":
+        print("error: expected 270 SIG\n")
         exit()
 
     msg = s.recv(10000)
-    print(msg.decode("ascii")+ "\n")
+    print(msg.decode("ascii"))
 
     #compare signature strings here
+    temp = msg.decode("ascii")
+    temp = temp.strip("\n")
 
-    if signatures[i] == msg.decode("ascii"):
-        s.send("PASS".encode("ascii"))
+    if signatures[i] == temp:
+        s.send("PASS\n".encode("ascii"))
         print("PASS\n")
     else:
-        s.send("FAIL".encode("ascii"))
+        s.send("FAIL\n".encode("ascii"))
         print("FAIL\n")
     msg = s.recv(128)
-    print(msg.decode("ascii")+ "\n")
-    if msg.decode("ascii") != "260 OK":
-        print("error: expected 260 OK")
+    print(msg.decode("ascii"))
+    if msg.decode("ascii") != "260 OK\n":
+        print("error: expected 260 OK\n")
         exit()
-s.send("QUIT".encode("ascii"))
+s.send("QUIT\n".encode("ascii"))
 print("QUIT\n")
 s.close()
