@@ -44,7 +44,8 @@ if msg.decode("ascii") != "260 OK":
 for i in range(len(msgBytes)):
 
     tempStr = msgBytes[i].decode()
-    print(tempStr)
+    #temp debug
+    # print(tempStr)
     tempStr = tempStr.replace(".","\.")
     s.send("DATA".encode("ascii"))
     print("DATA\n")        

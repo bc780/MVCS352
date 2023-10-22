@@ -14,8 +14,11 @@ keys = []
 with open(keyName, 'r', encoding='ascii') as file:
     for i, line in enumerate(file):
         keys.append(line.strip())
-print(keys)
-print(type(keys[0]))
+
+# temp debug
+# print(keys)
+# print(type(keys[0]))
+
 #tracker for what key its on        
 i = 0
 #establish socket
@@ -40,7 +43,8 @@ if msg.decode("ascii") == "HELLO":
             
             #unescape the line here
             tempStr = tempStr.replace("\.",".")
-            print(tempStr + "\n")
+            #temp debug
+            # print(tempStr + "\n")
             
             #use sha256 hash here
             hash = hashlib.sha256()
