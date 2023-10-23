@@ -42,8 +42,9 @@ if msg.decode("ascii") == "HELLO\n":
             print(tempStr)
             
             #unescape the line here
+            tempStr = tempStr.strip("\n.\n")
+            tempStr = tempStr + "."
             tempStr = tempStr.replace("\.",".")
-            tempStr = tempStr.strip("\n")
             #temp debug
             # print(tempStr + "\n")
             

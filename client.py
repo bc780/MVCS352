@@ -39,15 +39,16 @@ msg = s.recv(128)
 print(msg.decode("ascii"))
 if msg.decode("ascii") != "260 OK\n":
     print("error: expected 260 OK\n")
+    s.close()
     exit()
 
 for i in range(len(msgBytes)):
 
-    tempStr = msgBytes[i].decode()
+    tempStr = msgBytes[i].decode("ascii")
     #temp debug
     # print(tempStr)
     tempStr = tempStr.replace(".","\.")
-    tempStr = tempStr + "\n"
+    tempStr = tempStr + "\n.\n"
     s.send("DATA\n".encode("ascii"))
     print("DATA\n")        
     s.send(tempStr.encode("ascii"))
@@ -57,6 +58,7 @@ for i in range(len(msgBytes)):
     print(msg.decode("ascii"))
     if msg.decode("ascii") != "270 SIG\n":
         print("error: expected 270 SIG\n")
+        s.close()
         exit()
 
     msg = s.recv(10000)
@@ -76,6 +78,7 @@ for i in range(len(msgBytes)):
     print(msg.decode("ascii"))
     if msg.decode("ascii") != "260 OK\n":
         print("error: expected 260 OK\n")
+        s.close()
         exit()
 s.send("QUIT\n".encode("ascii"))
 print("QUIT\n")
